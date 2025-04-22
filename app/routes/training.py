@@ -1,101 +1,51 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
-from flask_login import login_required, current_user
-from app import db
-from app.models.training import TrainingRecord
-from datetime import datetime
-from app.models.evaluation import EvaluationRecord  # ✅ 新增這行
-from app.models.user import Announcement
+# # app/routes/api_training.py
+# from flask import Blueprint, request, jsonify
+# from flask_login import login_required, current_user
+# from app.database import get_db
+# from app.models.training import Training
+
+# api_training_bp = Blueprint("api_training", __name__, url_prefix="/api/trainings")
 
 
+# @api_training_bp.route("", methods=["GET", "POST"])
+# @login_required
+# def trainings():
+#     with get_db() as db:
+#         if request.method == "GET":
+#             recs = (
+#                 db.query(Training)
+#                 .filter_by(user_id=current_user.id)
+#                 .order_by(Training.date.desc())
+#                 .all()
+#             )
+#             return jsonify([r.to_dict() for r in recs]), 200
 
-training_bp = Blueprint('training', __name__)
-
-@training_bp.route('/upload', methods=['GET', 'POST'])
-@login_required
-def upload_training():
-    if request.method == 'POST':
-        record = TrainingRecord(
-            user_id=current_user.id,
-            date=datetime.strptime(request.form['date'], "%Y-%m-%d").date(),
-
-            jump_type=request.form.get('jump_type'),
-            jump_count=int(request.form.get('jump_count') or 0),
-
-            run_distance=float(request.form.get('run_distance') or 0),
-            run_time=request.form.get('run_time'),
-
-            weight_part=request.form.get('weight_part'),
-            weight_sets=int(request.form.get('weight_sets') or 0),
-
-            agility_type=request.form.get('agility_type'),
-            agility_note=request.form.get('agility_note'),
-
-            special_focus=request.form.get('special_focus')
-        )
-        db.session.add(record)
-        db.session.commit()
-        flash("✅ 訓練紀錄已成功上傳")
-        return redirect(url_for('training.upload_training'))
-
-    return render_template('upload.html')
+#         data = request.get_json()
+#         new = Training(user_id=current_user.id, **data)
+#         db.add(new)
+#         db.commit()
+#         db.refresh(new)
+#         return jsonify(new.to_dict()), 201
 
 
-@training_bp.route('/history')
-@login_required
-def training_history():
-    training_records = TrainingRecord.query.filter_by(user_id=current_user.id).order_by(TrainingRecord.date.desc()).all()
-    evaluation_records = EvaluationRecord.query.filter_by(user_id=current_user.id).order_by(EvaluationRecord.eval_date.desc()).all()
-    return render_template('all_records.html', trainings=training_records, evaluations=evaluation_records)
+# @api_training_bp.route("/<int:id>", methods=["GET", "PUT", "DELETE"])
+# @login_required
+# def training_detail(id):
+#     with get_db() as db:
+#         rec = db.query(Training).get(id)
+#         if not rec or rec.user_id != current_user.id:
+#             return jsonify({"error": "Not found"}), 404
 
+#         if request.method == "GET":
+#             return jsonify(rec.to_dict()), 200
 
-# ✅ 編輯訓練紀錄
-@training_bp.route('/edit/<int:record_id>', methods=['GET', 'POST'])
-@login_required
-def edit_record(record_id):
-    record = TrainingRecord.query.get_or_404(record_id)
-    if record.user_id != current_user.id:
-        return "無權限存取", 403
+#         if request.method == "PUT":
+#             for k, v in request.get_json().items():
+#                 setattr(rec, k, v)
+#             db.commit()
+#             return jsonify(rec.to_dict()), 200
 
-    if request.method == 'POST':
-        record.date = datetime.strptime(request.form['date'], "%Y-%m-%d").date()
-        record.time = request.form['time']
-        record.heart_rate = float(request.form['heart_rate'])
-        record.distance = float(request.form['distance'])
-        record.menu = request.form['menu']
-        db.session.commit()
-        flash("✅ 訓練紀錄已更新")
-        return redirect(url_for('training.training_history'))
-
-    return render_template('edit_record.html', record=record)
-
-# ✅ 刪除訓練紀錄
-@training_bp.route('/delete/<int:record_id>', methods=['POST'])
-@login_required
-def delete_record(record_id):
-    record = TrainingRecord.query.get_or_404(record_id)
-    if record.user_id != current_user.id:
-        return "無權限刪除", 403
-
-    db.session.delete(record)
-    db.session.commit()
-    flash("🗑️ 已刪除一筆紀錄")
-    return redirect(url_for('training.training_history'))
-
-@training_bp.route('/api/announcements', methods=['GET'])
-def get_announcements():
-    announcements = Announcement.query.all()
-    data = [
-        {
-            'id': a.id,
-            'title': a.title,
-            'content': a.content
-        }
-        for a in announcements
-    ]
-    return jsonify(data), 200
-
-
-@training_bp.route('/dashboard/announcement')
-def athlete_announcement_page():
-    return render_template('list.html')
-
+#         # DELETE
+#         db.delete(rec)
+#         db.commit()
+#         return "", 204

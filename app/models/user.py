@@ -1,17 +1,16 @@
-from app import db
-from flask_login import UserMixin
-from datetime import date
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
+from app.database import Base
 
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(120), nullable=False)
-    role = db.Column(db.String(20), nullable=False)  # athlete, coach, admin
 
-class Announcement(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.Date, nullable=False)  # ⬅️ 新增這一行
-    title = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    category = db.Column(db.String(20), nullable=False)
-    coach_id = db.Column(db.Integer, db.ForeignKey('user.id', name='fk_announcement_coach_id'))
+class User(Base):
+    __tablename__ = "user"
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String(80), unique=True, nullable=False)
+    password = Column(String(120), nullable=False)
+    role = Column(String(20), nullable=False)
+
+    announcements = relationship("Announcement", back_populates="coach")
+    trainings = relationship("Training", back_populates="user")
+    evaluations = relationship("Evaluation", back_populates="user")
