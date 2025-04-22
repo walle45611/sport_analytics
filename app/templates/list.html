@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>公告列表</title>
+</head>
+<body>
+  <h2>教練公告</h2>
+  <ul id="announcementList"></ul>
+
+  <script>
+    fetch('/training/api/announcements')
+      .then(res => res.json())
+      .then(data => {
+        const list = document.getElementById('announcementList');
+        data.forEach(item => {
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>${item.title}</strong><br>${item.content}<br><br>`;
+          list.appendChild(li);
+        });
+      })
+      .catch(err => {
+        console.error('載入公告失敗', err);
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head><title>教練主控台</title></head>
+<body>
+  <h2>👨‍🏫 歡迎教練 {{ current_user.username }}</h2>
+  <p>這是教練主控台畫面。</p>
+  <ul>
+    <li><a href="/coach//create_announcement">新增公告</a></li>
+    <li><a href="/coach/dashboard/announcements">查看公告</a></li>
+    <!-- 可以再加其他功能項目 -->
+  </ul>
+  
+  <a href="/auth/logout">登出</a>
+</body>
+</html>

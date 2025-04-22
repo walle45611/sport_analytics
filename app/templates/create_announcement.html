@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>新增公告</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .form-container {
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container mt-5">
+  <div class="form-container mx-auto" style="max-width: 600px;">
+    <h3 class="mb-4 fw-bold text-center">📢 發佈新公告</h3>
+
+    <form method="POST">
+      <div class="mb-3">
+        <label for="date" class="form-label">公告日期</label>
+        <input type="date" id="date" name="date" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="title" class="form-label">公告標題</label>
+        <input type="text" id="title" name="title" class="form-control" placeholder="請輸入標題" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="content" class="form-label">公告內容</label>
+        <textarea id="content" name="content" class="form-control" rows="4" placeholder="請輸入內容" required></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="category" class="form-label">公告分類</label>
+        <select id="category" name="category" class="form-select" required>
+          <option value="重要">重要</option>
+          <option value="任務">任務</option>
+          <option value="閒聊">閒聊</option>
+        </select>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <a href="/coach/dashboard" class="btn btn-outline-secondary">⬅️ 返回</a>
+        <button type="submit" class="btn btn-warning">📢 發佈</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>
